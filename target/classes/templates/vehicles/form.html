@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Vehicule')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<main class="container">
+    <h2 th:text="${editId} == null ? 'Nouveau vehicule' : 'Modifier le vehicule'">Vehicule</h2>
+
+    <div class="panel panel-narrow">
+        <form th:action="${editId} == null ? @{/vehicles} : @{/vehicles/{id}(id=${editId})}"
+              th:object="${vehicle}" method="post">
+            <div class="form-group">
+                <label>Immatriculation</label>
+                <input type="text" th:field="*{plateNumber}" required/>
+                <span class="field-error" th:if="${#fields.hasErrors('plateNumber')}"
+                      th:errors="*{plateNumber}"></span>
+            </div>
+            <div class="form-group">
+                <label>Marque</label>
+                <input type="text" th:field="*{brand}"/>
+            </div>
+            <div class="form-group">
+                <label>Modele</label>
+                <input type="text" th:field="*{model}"/>
+            </div>
+            <div class="form-group">
+                <label>Annee</label>
+                <input type="number" th:field="*{year}"/>
+            </div>
+            <div class="form-group">
+                <label>Type</label>
+                <select th:field="*{type}">
+                    <option th:each="t : ${allTypes}" th:value="${t}" th:text="${t}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Proprietaire</label>
+                <select th:field="*{ownerId}">
+                    <option value="">-- Aucun --</option>
+                    <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.fullName}"></option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                <a th:href="@{/vehicles}" class="btn">Annuler</a>
+            </div>
+        </form>
+    </div>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

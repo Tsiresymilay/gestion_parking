@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Connexion')}"></head>
+<body class="login-page">
+<div class="login-box">
+    <h1>Gestion Parking</h1>
+    <p class="subtitle">Veuillez vous connecter</p>
+
+    <div class="alert alert-error" th:if="${param.error}">Identifiants invalides</div>
+    <div class="alert alert-success" th:if="${param.logout}">Vous etes deconnecte</div>
+
+    <form th:action="@{/login}" method="post">
+        <div class="form-group">
+            <label for="username">Nom d'utilisateur</label>
+            <input type="text" id="username" name="username" required autofocus/>
+        </div>
+        <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" name="password" required/>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
+    </form>
+
+    <div class="hint">
+        <p>Comptes de demonstration :</p>
+        <ul>
+            <li>admin / admin123 (ADMIN)</li>
+            <li>manager / manager123 (MANAGER)</li>
+            <li>operateur / operateur123 (OPERATOR)</li>
+            <li>client / client123 (USER)</li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

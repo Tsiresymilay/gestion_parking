@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Utilisateurs')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<main class="container">
+    <h2>Gestion des utilisateurs</h2>
+    <div th:replace="~{fragments/layout :: messages}"></div>
+
+    <div class="panel">
+        <form method="get" th:action="@{/users}" class="filters">
+            <input type="text" name="keyword" placeholder="Rechercher (nom, identifiant)"
+                   th:value="${keyword}"/>
+            <select name="role">
+                <option value="">Tous les roles</option>
+                <option th:each="r : ${allRoles}" th:value="${r}"
+                        th:text="${r}" th:selected="${roleFilter == r}"></option>
+            </select>
+            <button type="submit" class="btn">Filtrer</button>
+            <a th:href="@{/users/new}" class="btn btn-primary">Nouvel utilisateur</a>
+        </form>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Identifiant</th>
+                <th>Nom complet</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Type</th>
+                <th>Actif</th>
+                <th class="actions-col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${users.content}">
+                <td th:text="${u.username}">-</td>
+                <td th:text="${u.fullName}">-</td>
+                <td th:text="${u.email}">-</td>
+                <td><span class="badge" th:text="${u.role}">-</span></td>
+                <td th:text="${u.userType}">-</td>
+                <td th:text="${u.enabled} ? 'Oui' : 'Non'">-</td>
+                <td class="actions">
+                    <a th:href="@{/users/{id}/edit(id=${u.id})}" class="btn btn-small">Modifier</a>
+                    <form th:action="@{/users/{id}/delete(id=${u.id})}" method="post"
+                          onsubmit="return confirm('Supprimer cet utilisateur ?');">
+                        <button class="btn btn-small btn-danger" type="submit">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${users.empty}">
+                <td colspan="7" class="empty">Aucun utilisateur</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            <span th:text="'Page ' + (${users.number} + 1) + ' / ' + ${users.totalPages}"></span>
+            <a th:if="${!users.first}" class="btn btn-small"
+               th:href="@{/users(page=${users.number - 1}, keyword=${keyword}, role=${roleFilter})}">Precedent</a>
+            <a th:if="${!users.last}" class="btn btn-small"
+               th:href="@{/users(page=${users.number + 1}, keyword=${keyword}, role=${roleFilter})}">Suivant</a>
+        </div>
+    </div>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

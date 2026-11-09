@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${title} + ' - Gestion Parking'">Gestion Parking</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav th:fragment="navbar" class="navbar">
+    <div class="brand">
+        <a th:href="@{/}">P-Gestion</a>
+    </div>
+    <ul class="menu">
+        <li><a th:href="@{/}">Tableau de bord</a></li>
+        <li><a th:href="@{/spaces/map}">Plan</a></li>
+        <li sec:authorize="hasAnyRole('ADMIN','MANAGER','OPERATOR','USER')"><a th:href="@{/spaces}">Places</a></li>
+        <li sec:authorize="hasAnyRole('ADMIN','MANAGER','OPERATOR')"><a th:href="@{/reservations}">Reservations</a></li>
+        <li sec:authorize="hasAnyRole('ADMIN','MANAGER')"><a th:href="@{/subscriptions}">Abonnements</a></li>
+        <li sec:authorize="hasAnyRole('ADMIN','MANAGER','OPERATOR')"><a th:href="@{/operations}">Entrees/Sorties</a></li>
+        <li sec:authorize="hasAnyRole('ADMIN','MANAGER')"><a th:href="@{/vehicles}">Vehicules</a></li>
+        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/users}">Utilisateurs</a></li>
+    </ul>
+    <div class="user-zone">
+        <span sec:authentication="name">user</span>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-small">Deconnexion</button>
+        </form>
+    </div>
+</nav>
+
+<div th:fragment="messages">
+    <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+    <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+</div>
+
+<footer th:fragment="footer" class="footer">
+    <p>Systeme de gestion d'un parking &copy; 2026 - Projet 4</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Tableau de bord')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<main class="container">
+    <h2>Tableau de bord</h2>
+    <div th:replace="~{fragments/layout :: messages}"></div>
+
+    <div class="cards">
+        <div class="card">
+            <div class="card-value" th:text="${occupancy.total}">0</div>
+            <div class="card-label">Places totales</div>
+        </div>
+        <div class="card card-green">
+            <div class="card-value" th:text="${occupancy.libre}">0</div>
+            <div class="card-label">Libres</div>
+        </div>
+        <div class="card card-red">
+            <div class="card-value" th:text="${occupancy.occupee}">0</div>
+            <div class="card-label">Occupees</div>
+        </div>
+        <div class="card card-orange">
+            <div class="card-value" th:text="${#numbers.formatDecimal(occupancy.tauxOccupation, 1, 1)} + '%'">0%</div>
+            <div class="card-label">Taux d'occupation</div>
+        </div>
+        <div class="card card-blue">
+            <div class="card-value" th:text="${#numbers.formatDecimal(revenue.total, 1, 0)} + ' Ar'">0</div>
+            <div class="card-label">Revenu du mois</div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <h3>Vehicules actuellement dans le parking</h3>
+            <a th:href="@{/operations}" class="btn btn-primary btn-small">Gerer les entrees/sorties</a>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Immatriculation</th>
+                <th>Place</th>
+                <th>Entree</th>
+                <th>Client</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="s : ${activeSessions}">
+                <td th:text="${s.plateNumber}">-</td>
+                <td th:text="${s.spaceNumber}">-</td>
+                <td th:text="${#temporals.format(s.entryTime, 'dd/MM/yyyy HH:mm')}">-</td>
+                <td th:text="${s.userName}">-</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(activeSessions)}">
+                <td colspan="4" class="empty">Aucun vehicule dans le parking</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

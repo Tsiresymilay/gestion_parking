@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Abonnements')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<main class="container">
+    <h2>Gestion des abonnements</h2>
+    <div th:replace="~{fragments/layout :: messages}"></div>
+
+    <div class="panel">
+        <form method="get" th:action="@{/subscriptions}" class="filters">
+            <input type="text" name="keyword" placeholder="Rechercher par immatriculation"
+                   th:value="${keyword}"/>
+            <select name="status">
+                <option value="">Tous les statuts</option>
+                <option th:each="s : ${allStatus}" th:value="${s}"
+                        th:text="${s}" th:selected="${statusFilter == s}"></option>
+            </select>
+            <button type="submit" class="btn">Filtrer</button>
+            <a th:href="@{/subscriptions/new}" class="btn btn-primary">Nouvel abonnement</a>
+        </form>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Client</th>
+                <th>Vehicule</th>
+                <th>Type</th>
+                <th>Debut</th>
+                <th>Fin</th>
+                <th>Statut</th>
+                <th>Valide</th>
+                <th class="actions-col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="s : ${subscriptions.content}">
+                <td th:text="${s.id}">-</td>
+                <td th:text="${s.userName}">-</td>
+                <td th:text="${s.plateNumber}">-</td>
+                <td th:text="${s.type}">-</td>
+                <td th:text="${#temporals.format(s.startDate, 'dd/MM/yyyy')}">-</td>
+                <td th:text="${#temporals.format(s.endDate, 'dd/MM/yyyy')}">-</td>
+                <td><span class="badge" th:text="${s.status}">-</span></td>
+                <td>
+                    <span th:if="${s.valid}" class="badge st-LIBRE">Oui</span>
+                    <span th:unless="${s.valid}" class="badge st-HORS_SERVICE">Non</span>
+                </td>
+                <td class="actions">
+                    <form th:if="${s.status.name() == 'ACTIF'}"
+                          th:action="@{/subscriptions/{id}/cancel(id=${s.id})}" method="post">
+                        <button class="btn btn-small btn-danger" type="submit">Annuler</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${subscriptions.empty}">
+                <td colspan="9" class="empty">Aucun abonnement</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            <span th:text="'Page ' + (${subscriptions.number} + 1) + ' / ' + ${subscriptions.totalPages}"></span>
+            <a th:if="${!subscriptions.first}" class="btn btn-small"
+               th:href="@{/subscriptions(page=${subscriptions.number - 1}, keyword=${keyword}, status=${statusFilter})}">Precedent</a>
+            <a th:if="${!subscriptions.last}" class="btn btn-small"
+               th:href="@{/subscriptions(page=${subscriptions.number + 1}, keyword=${keyword}, status=${statusFilter})}">Suivant</a>
+        </div>
+    </div>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

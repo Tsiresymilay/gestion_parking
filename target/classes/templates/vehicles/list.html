@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Vehicules')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<main class="container">
+    <h2>Gestion des vehicules</h2>
+    <div th:replace="~{fragments/layout :: messages}"></div>
+
+    <div class="panel">
+        <form method="get" th:action="@{/vehicles}" class="filters">
+            <input type="text" name="keyword" placeholder="Rechercher (immatriculation, marque)"
+                   th:value="${keyword}"/>
+            <select name="type">
+                <option value="">Tous les types</option>
+                <option th:each="t : ${allTypes}" th:value="${t}"
+                        th:text="${t}" th:selected="${typeFilter == t}"></option>
+            </select>
+            <button type="submit" class="btn">Filtrer</button>
+            <a th:href="@{/vehicles/new}" class="btn btn-primary">Nouveau vehicule</a>
+        </form>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Immatriculation</th>
+                <th>Marque</th>
+                <th>Modele</th>
+                <th>Annee</th>
+                <th>Type</th>
+                <th>Proprietaire</th>
+                <th class="actions-col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="v : ${vehicles.content}">
+                <td th:text="${v.plateNumber}">-</td>
+                <td th:text="${v.brand}">-</td>
+                <td th:text="${v.model}">-</td>
+                <td th:text="${v.year}">-</td>
+                <td th:text="${v.type}">-</td>
+                <td th:text="${v.ownerName}">-</td>
+                <td class="actions">
+                    <a th:href="@{/vehicles/{id}/edit(id=${v.id})}" class="btn btn-small">Modifier</a>
+                    <form th:action="@{/vehicles/{id}/delete(id=${v.id})}" method="post"
+                          onsubmit="return confirm('Supprimer ce vehicule ?');">
+                        <button class="btn btn-small btn-danger" type="submit">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${vehicles.empty}">
+                <td colspan="7" class="empty">Aucun vehicule</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            <span th:text="'Page ' + (${vehicles.number} + 1) + ' / ' + ${vehicles.totalPages}"></span>
+            <a th:if="${!vehicles.first}" class="btn btn-small"
+               th:href="@{/vehicles(page=${vehicles.number - 1}, keyword=${keyword}, type=${typeFilter})}">Precedent</a>
+            <a th:if="${!vehicles.last}" class="btn btn-small"
+               th:href="@{/vehicles(page=${vehicles.number + 1}, keyword=${keyword}, type=${typeFilter})}">Suivant</a>
+        </div>
+    </div>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

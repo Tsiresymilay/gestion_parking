@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Plan du parking')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<main class="container">
+    <h2>Plan du parking</h2>
+    <div th:replace="~{fragments/layout :: messages}"></div>
+
+    <div class="legend">
+        <span class="legend-item"><span class="dot st-LIBRE"></span> Libre</span>
+        <span class="legend-item"><span class="dot st-RESERVEE"></span> Reservee</span>
+        <span class="legend-item"><span class="dot st-OCCUPEE"></span> Occupee</span>
+        <span class="legend-item"><span class="dot st-HORS_SERVICE"></span> Hors service</span>
+    </div>
+
+    <div class="parking-plan">
+        <div th:each="s : ${spaces}"
+             th:classappend="${'space st-' + s.status}"
+             th:title="${s.number + ' - ' + s.zone + ' - ' + s.type + ' - ' + s.status}">
+            <div class="space-number" th:text="${s.number}">A1</div>
+            <div class="space-type" th:text="${s.type}">STANDARD</div>
+        </div>
+    </div>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>
